@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Ultah Nafisa Putri - Game Ucapan</title>
+<style>
+body {
+  margin:0; font-family:'Comic Sans MS',cursive,sans-serif;
+  background: linear-gradient(135deg,#ffb6c1,#ffc0cb,#ffe4e1);
+  display:flex; justify-content:center; align-items:center; height:100vh; text-align:center;
+  overflow:hidden;
+}
+.slide { display:none; flex-direction:column; align-items:center; width:100%; opacity:0; transition:opacity 0.8s ease; }
+.slide.active { display:flex; opacity:1; }
+h1 { color:#fff; text-shadow:2px 2px #ff69b4; }
+button { padding:8px 15px; margin:10px; cursor:pointer; border-radius:5px; background:#ff69b4; color:#fff; border:none; transition:0.3s; opacity:0; }
+button.show { opacity:1; transition:opacity 1s; }
+button:hover { transform:scale(1.05); }
+input { padding:5px; width:180px; border-radius:5px; border:2px solid #fff; text-align:center; }
+#foto { width:200px; border-radius:15px; border:5px solid #fff; box-shadow:0 0 15px #ff69b4; margin-top:20px; opacity:0; transition:opacity 1s;}
+.popup { position:absolute; background:#fff; color:#ff1493; padding:5px 10px; border-radius:10px; font-weight:bold; box-shadow:0 0 10px #ff69b4; opacity:0; transition:opacity 1s; }
+#cake img { width:300px; border-radius:20px; box-shadow:0 0 30px #ff69b4; margin-top:20px; opacity:0; transition:opacity 1s;}
+.candle { width:15px; height:50px; background:#ff4500; border-radius:5px; display:inline-block; margin:0 5px; position:relative; }
+.flame { width:10px; height:10px; background:yellow; border-radius:50%; position:absolute; top:-10px; left:50%; transform:translateX(-50%); animation:flicker 0.4s infinite alternate; }
+@keyframes flicker { 0%{opacity:1;} 50%{opacity:0.6; transform:translateX(-50%) translateY(-2px);} 100%{opacity:1;} }
+.photo-gallery img { width:150px; border-radius:15px; border:5px solid #fff; margin:5px; box-shadow:0 0 10px #ff69b4; opacity:0; transition:opacity 1s;}
+.photo-gallery img.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<div id="slide0" class="slide active">
+  <h1>🎉Selamat Ulang Tahun, Nafisa Putri! 🎉
+"kita main tebak-tebakan bentar ya"</h1>
+  <button id="startBtn" class="show">Mulai Permainan</button>
+</div>
+
+<div id="slide1" class="slide">
+  <p id="questionText"></p>
+  <input type="text" id="answerInput" placeholder="Jawabanmu...">
+  <button id="submitBtn" class="show">Submit</button>
+</div>
+
+<div id="slide2" class="slide">
+  <img id="foto" src="" alt="Foto Ultah">
+</div>
+
+<div id="slideFinal" class="slide">
+  <h1>🎂 Ini Kue Ulang Tahun Untuk Ica Yang Ke-17 🎂</h1>
+  <div id="cake">
+    <img src="cake.png" alt="Kue Ultah">
+    <div id="candles"></div>
+  </div>
+  <button id="blowBtn" class="show">Tiup Lilin nya ya sambil di klik yang di bawah</button>
+  <p id="cakeMessage" style="color:#fff; margin-top:10px;"></p>
+  <button id="showGalleryBtn" class="show">Next</button>
+</div>
+
+<div id="slideGallery" class="slide">
+  <h1>🥳 Selamat ulang tahun! semoga Allah melindungi, memberkahi dan
+memberikan kebahagiaan dalam hidup ica. Teruslah menjadi diri ica yang
+ceria dan penuh cinta. Adik yang paling cerewet 😅 semoga sekolah dapat
+nilai terbaik dan sukses. Terimakasih sudah menjadi adik yang membawa 
+tawa dan kehangatan. Bahagia ica adalah doa terbesar bg hari ini 🥳</h1>
+  <div id="gallery" class="photo-gallery"></div>
+</div>
+
+<audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
+<audio id="dingSound"><source src="ding.mp3" type="audio/mpeg"></audio>
+<audio id="oopsSound"><source src="oops.mp3" type="audio/mpeg"></audio>
+
+<script>
+let currentGame = 0;
+const totalGames = 5;
+const gameData = [
+  {question:"Tebak usia Nafisa!", answer:"17", photo:"foto1.jpg", message:"Ahahah alah gaek adek bg, lah 17 tahun buek KTP lai"},
+  {question:"Tebak warna favoritnya!", answer:"pink", photo:"foto2.jpg", message:"Gak pink gak ica namanya ☺ 💖 "},
+  {question:"Tebak makanan favoritnya!", answer:"", photo:"foto3.jpg", message:"Ingat makan nasi itu penting yaa."},
+  {question:"Tebak hobinya!", answer:"", photo:"foto4.jpg", message:"Saran bg Olahraga nya di tambah lagi ya."},
+  {question:"Tebak hadiah yang diinginkan!", answer:"", photo:"foto5.jpg", message:"Semoga dikabulkan Aamiin, (Aamiin kan aja dulu)."}
+];
+
+const slides = document.querySelectorAll(".slide");
+const fotoElem = document.getElementById("foto");
+
+document.getElementById("startBtn").addEventListener("click",()=>{
+  slides.forEach(s=>s.classList.remove("active"));
+  currentGame=1;
+  document.getElementById("slide1").classList.add("active");
+  showQuestion();
+});
+
+document.getElementById("submitBtn").addEventListener("click", checkAnswer);
+document.getElementById("blowBtn").addEventListener("click", blowCandles);
+document.getElementById("showGalleryBtn").addEventListener("click", showGallery);
+
+function showQuestion(){
+  document.getElementById("questionText").innerText = gameData[currentGame-1].question;
+  document.getElementById("answerInput").value = "";
+}
+
+function checkAnswer(){
+  const input=document.getElementById("answerInput").value.trim().toLowerCase();
+  const game=gameData[currentGame-1];
+
+  if(currentGame===3 && input==="seblak"){
+    document.getElementById("questionText").innerText="Waduh, no no seblak yaa ☝, coba yang lain!";
+    document.getElementById("oopsSound").play();
+    return;
+  }
+
+  if((currentGame===1 && input!==game.answer) || (currentGame===2 && input!==game.answer)){
+    document.getElementById("questionText").innerText="jangan di salah-salahkan lah jawabannya";
+    document.getElementById("oopsSound").play();
+    return;
+  }
+
+  document.getElementById("dingSound").play();
+  showFoto(game);
+}
+
+function showFoto(game){
+  slides.forEach(s=>s.classList.remove("active"));
+  fotoElem.src=game.photo; fotoElem.style.opacity=0;
+  document.getElementById("slide2").classList.add("active");
+  setTimeout(()=>fotoElem.style.opacity=1,100);
+
+  const p=document.createElement("div"); p.className="popup"; p.innerText=game.message;
+  document.body.appendChild(p);
+  const rect=fotoElem.getBoundingClientRect();
+  p.style.left=(rect.left + rect.width/2 - 75)+"px";
+  p.style.top=(rect.top - 40)+"px";
+  setTimeout(()=>p.style.opacity=1,100);
+  setTimeout(()=>p.remove(),10000);
+
+  const nextBtn=document.createElement("button"); nextBtn.innerText=currentGame<totalGames?"Next":"Kita tiup lilin yaa, gak ulang tahun namanya kalau gak tiup lilin 😉";
+  nextBtn.onclick=()=>{ if(currentGame<totalGames){ currentGame++; slides.forEach(s=>s.classList.remove("active")); document.getElementById("slide1").classList.add("active"); showQuestion(); nextBtn.remove(); } 
+  else { slides.forEach(s=>s.classList.remove("active")); document.getElementById("slideFinal").classList.add("active"); nextBtn.remove(); showCandles(); }};
+  document.getElementById("slide2").appendChild(nextBtn);
+  setTimeout(()=>nextBtn.classList.add("show"),100);
+}
+
+function showCandles(){
+  const candles=document.getElementById("candles"); candles.innerHTML="";
+  for(let i=0;i<5;i++){ const candle=document.createElement("div"); candle.className="candle"; const flame=document.createElement("div"); flame.className="flame"; candle.appendChild(flame); candles.appendChild(candle); }
+  document.getElementById("cake").querySelector("img").style.opacity=1;
+}
+
+function blowCandles(){ document.querySelectorAll(".flame").forEach(f=>f.style.display="none"); document.getElementById("cakeMessage").innerText="Semoga Nafisa selalu sehat, bahagia, dan sukses! 🥰"; }
+
+function showGallery(){ slides.forEach(s=>s.classList.remove("active")); document.getElementById("slideGallery").classList.add("active");
+const gallery=document.getElementById("gallery"); gallery.innerHTML=""; gameData.forEach(g=>{ const img=document.createElement("img"); img.src=g.photo; gallery.appendChild(img); setTimeout(()=>img.classList.add("show"),50); });
+const cakeImg=document.createElement("img"); cakeImg.src="cake.png"; gallery.appendChild(cakeImg); setTimeout(()=>cakeImg.classList.add("show"),100); }
+
+document.body.addEventListener('click',()=>{ const audio=document.getElementById("bgMusic"); if(audio.paused) audio.play(); },{once:true});
+</script>
+</body>
+</html>
