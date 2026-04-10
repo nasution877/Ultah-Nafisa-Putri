@@ -50,7 +50,7 @@ input { padding:5px; width:180px; border-radius:5px; border:2px solid #fff; text
     <img src="cake.png" alt="Kue Ultah">
     <div id="candles"></div>
   </div>
-  <button id="blowBtn" class="show">Tiup Lilin nya ya sambil di klik yang di bawah</button>
+  <button id="blowBtn" class="show"> (Tiup Lilin nya ya sambil klik tulisan ini) </button>
   <p id="cakeMessage" style="color:#fff; margin-top:10px;"></p>
   <button id="showGalleryBtn" class="show">Next</button>
 </div>
@@ -103,13 +103,13 @@ function checkAnswer(){
   const game=gameData[currentGame-1];
 
   if(currentGame===3 && input==="seblak"){
-    document.getElementById("questionText").innerText="Waduh, no no seblak yaa ☝, coba yang lain!";
+    document.getElementById("questionText").innerText="Waduh, no no seblak yaa ☝, yang lain. gak boleh seblak";
     document.getElementById("oopsSound").play();
     return;
   }
 
   if((currentGame===1 && input!==game.answer) || (currentGame===2 && input!==game.answer)){
-    document.getElementById("questionText").innerText="jangan di salah-salahkan lah jawabannya";
+    document.getElementById("questionText").innerText="jangan di salah-salahin jawab nya";
     document.getElementById("oopsSound").play();
     return;
   }
@@ -145,7 +145,7 @@ function showCandles(){
   document.getElementById("cake").querySelector("img").style.opacity=1;
 }
 
-function blowCandles(){ document.querySelectorAll(".flame").forEach(f=>f.style.display="none"); document.getElementById("cakeMessage").innerText="Semoga Nafisa selalu sehat, bahagia, dan sukses! 🥰"; }
+function blowCandles(){ document.querySelectorAll(".flame").forEach(f=>f.style.display="none"); document.getElementById("cakeMessage").innerText="Yeeyy!!! Horee!!! baru klik tombol yang bawah"; }
 
 function showGallery(){ slides.forEach(s=>s.classList.remove("active")); document.getElementById("slideGallery").classList.add("active");
 const gallery=document.getElementById("gallery"); gallery.innerHTML=""; gameData.forEach(g=>{ const img=document.createElement("img"); img.src=g.photo; gallery.appendChild(img); setTimeout(()=>img.classList.add("show"),50); });
